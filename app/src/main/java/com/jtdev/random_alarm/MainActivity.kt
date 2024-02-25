@@ -23,6 +23,7 @@ import com.jtdev.random_alarm.MyApplication.Companion.context
 import com.jtdev.random_alarm.ui.theme.MyApplicationTheme
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private val alarmReceiver = AlarmReceiver()
@@ -102,8 +103,8 @@ fun SetAlarmButton() {
                     alarmTimeLeft = null
                     alarmActive = false
                 } else {
-                    //val maxAlarmTime = selectedTime * 60 * 60 * 1000L // Convert hours to milliseconds
-                    val maxAlarmTime = 5 * 1000L
+                    val maxAlarmTime = selectedTime * 60 * 60 * 1000L // Convert hours to milliseconds
+                    //val maxAlarmTime = 5 * 1000L
                     val alarmTime =  (System.currentTimeMillis()..System.currentTimeMillis() + maxAlarmTime + 1).random()
 
                     alarmTimeLeft = alarmTime
@@ -157,7 +158,13 @@ fun CountdownTimer(alarmTime: Long) {
         timer.start()
     }
 
-    Text("Time left until alarm: ${timeLeft / 1000} seconds")
+    val hours = TimeUnit.MILLISECONDS.toHours(timeLeft)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60
+
+    val formattedTime = String.format("%02dh %02dm %02ds", hours, minutes, seconds)
+
+    Text("Time left until alarm: $formattedTime")
 }
 
 fun setRandomAlarm(context: Context, alarmTime: Long, alarmId: Int) {
